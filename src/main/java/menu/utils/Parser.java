@@ -1,28 +1,38 @@
 package menu.utils;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Parser {
-    // TODO: 문제 형식에 맞게 정규식 수정
-    // 예: [콜라,1000,10] -> "\\[([가-힣]+),([0-9]+),([0-9]+)\\]"
-    // 예: 1. 커스텀 구분자 -> "//(.)\n(.*)"
-    private static final Pattern PATTERN = Pattern.compile("\\[(.*?),(.*?),(.*?)\\]");
+    private static final Pattern NAME_PATTERN = Pattern.compile("[가-힣]*");
 
-    public static String[] parse(String input) {
-        Matcher matcher = PATTERN.matcher(input);
+    public static List<String> coachNameParse(String input) {
+        List<String> coaches = Arrays.stream(input.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
 
-        if (matcher.matches()) {
-            // 그룹 1부터 시작함에 주의
-            String part1 = matcher.group(1).trim();
-            String part2 = matcher.group(2).trim();
-            String part3 = matcher.group(3).trim();
-
-            // TODO: 비즈니스 로직 검증
-
-            return new String[]{part1, part2, part3};
+        Validator.validateCoachSize(coaches.size());
+        for (String coach : coaches) {
+            Validator.validateNameLen(coach.length());
+            Matcher matcher = NAME_PATTERN.matcher(coach);
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException("입력 형식이 올바르지 않습니다.");
+            }
         }
 
-        throw new IllegalArgumentException("입력 형식이 올바르지 않습니다.");
+        return coaches;
+    }
+
+    public static List<String> menusParse(String input) {
+        List<String> menus = Arrays.stream(input.split(","))
+                .map(String::trim)
+                .collect(Collectors.toList());
+
+        Validator.validateMenuSize(menus.size());
+
+        return menus;
     }
 }

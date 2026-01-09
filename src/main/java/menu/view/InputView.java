@@ -1,6 +1,7 @@
 package menu.view;
 
 import camp.nextstep.edu.missionutils.Console;
+import menu.utils.Parser;
 import menu.utils.Validator;
 
 import java.util.Arrays;
@@ -16,17 +17,12 @@ public class InputView {
         String input = Console.readLine();
         Validator.validateHasText(input);
 
-        return Arrays.stream(input.split(","))
-                .map(String::trim)
-                .collect(Collectors.toList());
+        return Parser.coachNameParse(input);
     }
 
     public List<String> readMenus(String name) {
         System.out.println("" + name + "(이)가 못 먹는 메뉴를 입력해 주세요.");
         String input = Console.readLine();
-
-        return Arrays.stream(input.split(","))
-                .map(String::trim)
-                .collect(Collectors.toList());
+        return Parser.menusParse(input);
     }
 }
